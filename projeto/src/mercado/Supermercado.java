@@ -113,5 +113,15 @@ public class Supermercado {
     }
 
     public void atualizarFornecedor(String cnpj, String nome, String contato,List<Produto> produtoFornecido) {
+    
+    for (Fornecedor fornecedor : fornecedores) {
+        if (fornecedor.getCnpj().equalsIgnoreCase(cnpj)) {
+            fornecedor.setContato(contato);
+            fornecedor.setProdutosFornecidos(produtoFornecido);
+            System.out.println("Fornecedor atualizado!");
+            return;
+        }
     }
+    System.out.println("Fornecedor não encontrado!");
+}
 }

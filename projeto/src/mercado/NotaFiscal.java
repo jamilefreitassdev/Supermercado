@@ -3,14 +3,14 @@ package mercado;
 public class NotaFiscal {
     private Long id;
     private String numeroDaConta;
-    private String dataDeEspedicao;
+    private String dataDeExpedicao;
     private float valor;
     private Fornecedor fornecedor;
     
 	public NotaFiscal(Long id, String numeroDaConta, String dataDeEspedicao, float valor, Fornecedor fornecedor) {
 		this.id = id;
 		this.numeroDaConta = numeroDaConta;
-		this.dataDeEspedicao = dataDeEspedicao;
+		this.dataDeExpedicao = dataDeExpedicao;
 		this.valor = valor;
 		this.fornecedor = fornecedor;
 	}
@@ -32,11 +32,11 @@ public class NotaFiscal {
 	}
 
 	public String getDataDeEspedicao() {
-		return dataDeEspedicao;
+		return dataDeExpedicao;
 	}
 
 	public void setDataDeEspedicao(String dataDeEspedicao) {
-		this.dataDeEspedicao = dataDeEspedicao;
+		this.dataDeExpedicao = dataDeEspedicao;
 	}
 
 	public float getValor() {
@@ -57,7 +57,7 @@ public class NotaFiscal {
 
 	@Override
 	public String toString() {
-		return "NotaFiscal [id=" + id + ", numeroDaConta=" + numeroDaConta + ", dataDeEspedicao=" + dataDeEspedicao
+		return "NotaFiscal [id=" + id + ", numeroDaConta=" + numeroDaConta + ", dataDeEspedicao=" + dataDeExpedicao
 				+ ", valor=" + valor + ", fornecedor=" + fornecedor + "]";
 	}
     
