@@ -7,12 +7,13 @@ public class NotaFiscal {
     private float valor;
     private Fornecedor fornecedor;
     
-	public NotaFiscal(Long id, String numeroDaConta, String dataDeEspedicao, float valor, Fornecedor fornecedor) {
+	public NotaFiscal(Long id, String numeroDaConta, String dataDeExpedicao, float valor, Fornecedor fornecedor) {
 		this.id = id;
 		this.numeroDaConta = numeroDaConta;
 		this.dataDeExpedicao = dataDeExpedicao;
 		this.valor = valor;
 		this.fornecedor = fornecedor;
+   
 	}
 
 	public Long getId() {
@@ -31,12 +32,12 @@ public class NotaFiscal {
 		this.numeroDaConta = numeroDaConta;
 	}
 
-	public String getDataDeEspedicao() {
+	public String getDataDeExpedicao() {
 		return dataDeExpedicao;
 	}
 
-	public void setDataDeEspedicao(String dataDeEspedicao) {
-		this.dataDeExpedicao = dataDeEspedicao;
+	public void setDataDeExpedicao(String dataDeExpedicao) {
+		this.dataDeExpedicao = dataDeExpedicao;
 	}
 
 	public float getValor() {
@@ -57,9 +58,8 @@ public class NotaFiscal {
 
 	@Override
 	public String toString() {
-		return "NotaFiscal [id=" + id + ", numeroDaConta=" + numeroDaConta + ", dataDeEspedicao=" + dataDeExpedicao
+		return "NotaFiscal [id=" + id + ", numeroDaConta=" + numeroDaConta + ", dataDeExpedicao=" + dataDeExpedicao
 				+ ", valor=" + valor + ", fornecedor=" + fornecedor + "]";
 	}
-    
-   
+	
 }

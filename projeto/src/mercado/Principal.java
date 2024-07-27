@@ -22,11 +22,12 @@ public class Principal {
             System.out.println("3. Gerenciar Clientes");
             System.out.println("4. Gerenciar Fornecedores");
             System.out.println("5. Gerenciar Notas Fiscais");
-            System.out.println("6. Sair");
+            System.out.println("6. Gerenciar Carrinho de Compra");
+            System.out.println("7. Sair");
 
             int opcao = Integer.parseInt(sc.nextLine());
 
-            if (opcao == 6) {
+            if (opcao == 7) {
                 break;
             }
 
@@ -138,6 +139,8 @@ public class Principal {
                 controller.adicionar(funcionario);
                 break;
             case 2:
+            	System.out.println("Digite o Nome:");
+                String novoNome = sc.nextLine();
                 System.out.println("Digite o CPF do Funcionário a ser atualizado:");
                 String cpfParaAtualizar = sc.nextLine();
 
@@ -148,7 +151,7 @@ public class Principal {
                 System.out.println("Digite as Horas Trabalhadas:");
                 int novasHorasTrabalhadas = Integer.parseInt(sc.nextLine());
 
-                Funcionario funcionarioAtualizado = new Funcionario(null, novoCargo, nome, novoSalario, cpfParaAtualizar, novasHorasTrabalhadas);
+                Funcionario funcionarioAtualizado = new Funcionario(null, novoNome, novoCargo, novoSalario, cpfParaAtualizar, novasHorasTrabalhadas);
                 controller.atualizar(cpfParaAtualizar, funcionarioAtualizado);
                 break;
             case 3:
@@ -261,13 +264,39 @@ public class Principal {
                 controller.adicionar(fornecedor);
                 break;
             case 2:
+            	 System.out.println("Digite o Nome:");
+                 String nomeNovo = sc.nextLine();
+            	System.out.println("Digite a quantidade de produtos fornecidos:");
+                int quantidade1 = Integer.parseInt(sc.nextLine());
+
+                List<Produto> produtosFornecidos1 = new ArrayList<>();
+                for (int i = 0; i < quantidade1; i++) {
+                    System.out.println("Digite o ID do Produto:");
+                    Long produtoId = Long.parseLong(sc.nextLine());
+                    System.out.println("Digite o Código de Barra:");
+                    String codigoDeBarra = sc.nextLine();
+                    System.out.println("Digite o Nome do Produto:");
+                    String nomeProduto = sc.nextLine();
+                    System.out.println("Digite o Preço do Produto:");
+                    float preco = Float.parseFloat(sc.nextLine());
+                    System.out.println("Digite a Categoria do Produto:");
+                    String categoria = sc.nextLine();
+                    System.out.println("Digite a Quantidade do Produto:");
+                    int quantidadeProduto = Integer.parseInt(sc.nextLine());
+                    System.out.println("Digite a Marca do Produto:");
+                    String marca = sc.nextLine();
+
+                    Produto produto = new Produto(produtoId, codigoDeBarra, nomeProduto, preco, categoria, quantidadeProduto, marca);
+                    produtosFornecidos1.add(produto);
+                }
+
                 System.out.println("Digite o CNPJ do Fornecedor a ser atualizado:");
                 String cnpjParaAtualizar = sc.nextLine();
 
                 System.out.println("Digite o Contato:");
                 String novoContato = sc.nextLine();
 
-                Fornecedor fornecedorAtualizado = new Fornecedor(null, null, novoContato, cnpjParaAtualizar, null);
+                Fornecedor fornecedorAtualizado = new Fornecedor(null, nomeNovo, produtosFornecidos1, cnpjParaAtualizar, novoContato);
                 controller.atualizar(cnpjParaAtualizar, fornecedorAtualizado);
                 break;
             case 3:
@@ -286,9 +315,7 @@ public class Principal {
 
     private static void gerenciarNotasFiscais(Scanner sc, ControlarNotaFiscal controller) {
         System.out.println("1. Adicionar Nota Fiscal");
-        System.out.println("2. Atualizar Nota Fiscal");
-        System.out.println("3. Deletar Nota Fiscal");
-        System.out.println("4. Listar Notas Fiscais");
+        System.out.println("2. Listar Notas Fiscais");
 
         int opcao = Integer.parseInt(sc.nextLine());
 
@@ -307,23 +334,6 @@ public class Principal {
                 controller.adicionar(notaFiscal);
                 break;
             case 2:
-                System.out.println("Digite o ID da Nota Fiscal a ser atualizada:");
-                Long idParaAtualizar = Long.parseLong(sc.nextLine());
-
-                System.out.println("Digite a nova descrição:");
-                String novaDescricao = sc.nextLine();
-                System.out.println("Digite o novo valor total:");
-                float novoValorTotal = Float.parseFloat(sc.nextLine());
-
-                NotaFiscal notaFiscalAtualizada = new NotaFiscal(idParaAtualizar, null, novaDescricao, novoValorTotal, null);
-                controller.atualizar(idParaAtualizar, notaFiscalAtualizada);
-                break;
-            case 3:
-                System.out.println("Digite o ID da Nota Fiscal a ser deletada:");
-                Long idParaDeletar = Long.parseLong(sc.nextLine());
-                controller.deletar(idParaDeletar);
-                break;
-            case 4:
                 controller.listar();
                 break;
             default:

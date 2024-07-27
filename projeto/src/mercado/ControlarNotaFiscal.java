@@ -19,9 +19,9 @@ public class ControlarNotaFiscal implements Crud<NotaFiscal> {
         }
 	}
 	@Override
-	public void deletar(String dataDeEspedicao) {
+	public void deletar(String dataDeExpedicao) {
 		try {
-            notasFiscais.removeIf(notaFiscal -> notaFiscal.getId().toString().equalsIgnoreCase(dataDeEspedicao));
+            notasFiscais.removeIf(notaFiscal -> notaFiscal.getId().toString().equalsIgnoreCase(dataDeExpedicao));
             System.out.println("Nota Fiscal removida!");
         } catch (Exception e) {
             System.out.println("Erro ao remover Nota Fiscal: " + e.getMessage());
@@ -39,12 +39,12 @@ public class ControlarNotaFiscal implements Crud<NotaFiscal> {
 		
 	}
 	@Override
-	public void atualizar(String dataDeEspedicao, NotaFiscal notaFiscalAtualizada) {
+	public void atualizar(String dataDeExpedicao, NotaFiscal notaFiscalAtualizada) {
 		  try {
 	            for (NotaFiscal notaFiscal : notasFiscais) {
-	                if (notaFiscal.getId().toString().equalsIgnoreCase(dataDeEspedicao)) {
+	                if (notaFiscal.getId().toString().equalsIgnoreCase(dataDeExpedicao)) {
 	                    notaFiscal.setNumeroDaConta(notaFiscalAtualizada.getNumeroDaConta());
-	                    notaFiscal.setDataDeEspedicao(notaFiscalAtualizada.getDataDeEspedicao());
+	                    notaFiscal.setDataDeExpedicao(notaFiscalAtualizada.getDataDeExpedicao());
 	                    notaFiscal.setValor(notaFiscalAtualizada.getValor());
 	                    notaFiscal.setFornecedor(notaFiscalAtualizada.getFornecedor());
 	                    System.out.println("Nota Fiscal atualizada!");
