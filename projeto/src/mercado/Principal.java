@@ -3,6 +3,7 @@ package mercado;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Principal {
 
@@ -56,64 +57,113 @@ public class Principal {
         sc.close();
     }
 
-    private static void gerenciarProdutos(Scanner sc, ControlarProduto controller) {
-        System.out.println("1. Adicionar Produto");
-        System.out.println("2. Atualizar Produto");
-        System.out.println("3. Deletar Produto");
-        System.out.println("4. Listar Produtos");
+	private static void gerenciarProdutos(Scanner sc, ControlarProduto controller) {
+	    System.out.println("1. Adicionar Produto");
+	    System.out.println("2. Atualizar Produto");
+	    System.out.println("3. Deletar Produto");
+	    System.out.println("4. Listar Produtos");
 
-        int opcao = Integer.parseInt(sc.nextLine());
+	    int opcao;
+	    try {
+	        opcao = Integer.parseInt(sc.nextLine());
+	    } catch (NumberFormatException e) {
+	        System.out.println("Entrada inválida. Por favor, insira um número.");
+	        return;
+	    }
 
-        switch (opcao) {
-            case 1:
-                System.out.println("Digite o ID:");
-                Long id = Long.parseLong(sc.nextLine());
-                System.out.println("Digite o Código de Barra:");
-                String codigoDeBarra = sc.nextLine();
-                System.out.println("Digite o Nome:");
-                String nome = sc.nextLine();
-                System.out.println("Digite o Preço:");
-                float preco = Float.parseFloat(sc.nextLine());
-                System.out.println("Digite a Categoria:");
-                String categoria = sc.nextLine();
-                System.out.println("Digite a Quantidade:");
-                int quantidade = Integer.parseInt(sc.nextLine());
-                System.out.println("Digite a Marca:");
-                String marca = sc.nextLine();
+	    switch (opcao) {
+	        case 1:
+	            UUID id = UUID.randomUUID(); // Gerar o ID automaticamente
+	            String codigoDeBarra = "";
+	            String nome = "";
+	            float preco = 0.0f;
+	            String categoria = "";
+	            int quantidade = 0;
+	            String marca = "";
 
-                Produto produto = new Produto(id, codigoDeBarra, nome, preco, categoria, quantidade, marca);
-                controller.adicionar(produto);
-                break;
-            case 2:
-                System.out.println("Digite o Nome do Produto a ser atualizado:");
-                String nomeParaAtualizar = sc.nextLine();
+	            try {
+	                System.out.println("Digite o Código de Barra:");
+	                codigoDeBarra = sc.nextLine();
 
-                System.out.println("Digite o Preço:");
-                float novoPreco = Float.parseFloat(sc.nextLine());
-                System.out.println("Digite a Categoria:");
-                String novaCategoria = sc.nextLine();
-                System.out.println("Digite a Quantidade:");
-                int novaQuantidade = Integer.parseInt(sc.nextLine());
-                System.out.println("Digite a Marca:");
-                String novaMarca = sc.nextLine();
+	                // Verificação do formato do código de barras
+	                if (codigoDeBarra.isEmpty() || !codigoDeBarra.matches("\\d+")) {
+	                    throw new IllegalArgumentException("Código de barra inválido. Deve conter apenas números.");
+	                }
 
-                Produto produtoAtualizado = new Produto(null, null, nomeParaAtualizar, novoPreco, novaCategoria, novaQuantidade, novaMarca);
-                controller.atualizar(nomeParaAtualizar, produtoAtualizado);
-                break;
-            case 3:
-                System.out.println("Digite o Nome do Produto a ser deletado:");
-                String nomeParaDeletar = sc.nextLine();
-                controller.deletar(nomeParaDeletar);
-                break;
-            case 4:
-                controller.listar();
-                break;
-            default:
-                System.out.println("Opção inválida.");
-                break;
-        }
-    }
+	                System.out.println("Digite o Nome:");
+	                nome = sc.nextLine();
 
+	                if (nome.isEmpty()) {
+	                    throw new IllegalArgumentException("Nome não pode ser vazio.");
+	                }
+
+	                System.out.println("Digite o Preço:");
+	                preco = Float.parseFloat(sc.nextLine());
+
+	                System.out.println("Digite a Categoria:");
+	                categoria = sc.nextLine();
+
+	                if (categoria.isEmpty()) {
+	                    throw new IllegalArgumentException("Categoria não pode ser vazia.");
+	                }
+
+	                System.out.println("Digite a Quantidade:");
+	                quantidade = Integer.parseInt(sc.nextLine());
+
+	                System.out.println("Digite a Marca:");
+	                marca = sc.nextLine();
+
+	                if (marca.isEmpty()) {
+	                    throw new IllegalArgumentException("Marca não pode ser vazia.");
+	                }
+	            } catch (NumberFormatException e) {
+	                System.out.println("Entrada inválida. Por favor, insira valores corretos.");
+	                return;
+	            } catch (IllegalArgumentException e) {
+	                System.out.println(e.getMessage());
+	                return;
+	            }
+
+	            Produto produto = new Produto(null, codigoDeBarra, nome, preco, categoria, quantidade, marca);
+	            controller.adicionar(produto);
+	            break;
+
+	        case 2:
+	            try {
+	                System.out.println("Digite o Nome do Produto a ser atualizado:");
+	                String nomeParaAtualizar = sc.nextLine();
+
+	                System.out.println("Digite o Preço:");
+	                float novoPreco = Float.parseFloat(sc.nextLine());
+	                System.out.println("Digite a Categoria:");
+	                String novaCategoria = sc.nextLine();
+	                System.out.println("Digite a Quantidade:");
+	                int novaQuantidade = Integer.parseInt(sc.nextLine());
+	                System.out.println("Digite a Marca:");
+	                String novaMarca = sc.nextLine();
+
+	                Produto produtoAtualizado = new Produto(null, null, nomeParaAtualizar, novoPreco, novaCategoria, novaQuantidade, novaMarca);
+	                controller.atualizar(nomeParaAtualizar, produtoAtualizado);
+	            } catch (NumberFormatException e) {
+	                System.out.println("Entrada inválida. Por favor, insira valores corretos.");
+	            }
+	            break;
+
+	        case 3:
+	            System.out.println("Digite o Nome do Produto a ser deletado:");
+	            String nomeParaDeletar = sc.nextLine();
+	            controller.deletar(nomeParaDeletar);
+	            break;
+
+	        case 4:
+	            controller.listar();
+	            break;
+
+	        default:
+	            System.out.println("Opção inválida.");
+	            break;
+	    }
+	}
     private static void gerenciarFuncionarios(Scanner sc, ControlarFuncionario controller) {
         System.out.println("1. Adicionar Funcionário");
         System.out.println("2. Atualizar Funcionário");
