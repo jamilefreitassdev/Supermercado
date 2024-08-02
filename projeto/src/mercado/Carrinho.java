@@ -1,43 +1,38 @@
 package mercado;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Carrinho {
-	private Long id;
-	private String formaDePagamento;
-	private List<Produto> quantidade;
+	private String id;
+	private FormaDePagamento formaDePagamento;
+	private List<Produto> produtos;
 	
-	public Carrinho(Long id, String formaDePagamento, List<Produto> quantidade) {
+	 public Carrinho(String id) {
+		super();
 		this.id = id;
-		this.formaDePagamento = formaDePagamento;
-		this.quantidade = quantidade;
+		this.produtos = new ArrayList<>();
+		
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public String getFormaDePagamento() {
+
+	public FormaDePagamento getFormaDePagamento() {
 		return formaDePagamento;
 	}
 
-	public void setFormaDePagamento(String formaDePagamento) {
+	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
 		this.formaDePagamento = formaDePagamento;
 	}
 
-	public List<Produto> getQuantidade() {
-		return quantidade;
-	}
-
-	public void setQuantidade(List<Produto> quantidade) {
-		this.quantidade = quantidade;
-	}
-
-	@Override
-	public String toString() {
-		return "Carrinho [id=" + id + ", formaDePagamento=" + formaDePagamento + ", quantidade=" + quantidade + "]";
+	public List<Produto> getProdutos() {
+		return produtos;
+	
 	}
 }

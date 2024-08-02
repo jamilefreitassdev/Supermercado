@@ -9,51 +9,40 @@ public class ControlarFuncionario implements Crud<Funcionario> {
 	public ControlarFuncionario() {
 		this.funcionarios = new ArrayList<>();
 	}
-
+	private static int idCounter = 1;
 	@Override
 	public void adicionar(Funcionario funcionario) {
-		 try {
-	            funcionarios.add(funcionario);
-	            System.out.println("Funcionário adicionado!");
-	        } catch (Exception e) {
-	            System.out.println("Erro ao adicionar funcionário: " + e.getMessage());
-	        }
+		funcionario.setId(String.format("%04d", idCounter++));
+		this.funcionarios.add(funcionario);
+		
 	}
 
 	@Override
-	public void deletar(String cpf) {
-		try {
-            funcionarios.removeIf(funcionario -> funcionario.getCpf().equalsIgnoreCase(cpf));
-            System.out.println("Funcionário removido!");
-        } catch (Exception e) {
-            System.out.println("Erro ao remover funcionário: " + e.getMessage());
-        }
+	public void deletar(String id) {
+		 funcionarios.removeIf(funcionario -> funcionario.getId().equals(id));
+		
 	}
+
 	@Override
 	public void listar() {
-		try {
-            for (Funcionario funcionario : funcionarios) {
-                System.out.println(funcionario);
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao listar funcionários: " + e.getMessage());
+		for (Funcionario funcionario : funcionarios) {
+            System.out.println(funcionario);
         }
+		
 	}
+
 	@Override
-	public void atualizar(String cpf, Funcionario funcionarioAtualizado) {
-		try {
-            for (Funcionario funcionario : funcionarios) {
-                if (funcionario.getCpf().equalsIgnoreCase(cpf)) {
-                    funcionario.setSalario(funcionarioAtualizado.getSalario());
-                    funcionario.setCargo(funcionarioAtualizado.getCargo());
-                    funcionario.setHorasTrabalhadas(funcionarioAtualizado.getHorasTrabalhadas());
-                    System.out.println("Funcionário atualizado!");
-                    return;
-                }
+	public void atualizar(String id, Funcionario funcionarioAtualizado) {
+		for (Funcionario funcionario : funcionarios) {
+            if (funcionario.getId().equals(id)) {
+                funcionario.setNome(funcionarioAtualizado.getNome());
+                funcionario.setCargo(funcionarioAtualizado.getCargo());
+                funcionario.setSalario(funcionarioAtualizado.getSalario());
+                funcionario.setCpf(funcionarioAtualizado.getCpf());
+                funcionario.setHorasTrabalhadas(funcionarioAtualizado.getHorasTrabalhadas());
+                break;
             }
-            System.out.println("Funcionário não encontrado.");
-        } catch (Exception e) {
-            System.out.println("Erro ao atualizar funcionário: " + e.getMessage());
-        }
-	}
-} 
+		}
+	}	
+
+}	

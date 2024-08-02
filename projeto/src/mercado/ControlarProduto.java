@@ -9,55 +9,50 @@ public class ControlarProduto implements Crud<Produto> {
 	public ControlarProduto() {
 		this.produtos = new ArrayList<>();
 	}
-
+	 private static int idCounter = 1;
 	@Override
 	public void adicionar(Produto produto) { 
-		try {
-			produtos.add(produto);
-			System.out.println("Produto adicionado!");
-		}  catch (Exception e) {
-         System.out.println("Erro ao adicionar Produto: " + e.getMessage());
-		}	
-	}
-
+		 produto.setId(String.format("%04d", idCounter++));
+	        produtos.add(produto);
+		}
 	@Override
-	public void deletar(String nome) {
-	    try {
-            produtos.removeIf(produto -> produto.getNome().equalsIgnoreCase(nome));
-            System.out.println("Produto removido!");
-        } catch (Exception e) {
-            System.out.println("Erro ao remover Produto: " + e.getMessage());
+	public void deletar(String id) {
+            produtos.removeIf(produto -> produto.getId().equals(id));
         }
-	}
 
 	@Override
 	public void listar() {
-        try {
             for (Produto produto : produtos) {
                 System.out.println(produto);
             }
-        } catch (Exception e) {
-            System.out.println("Erro ao listar Produtos: " + e.getMessage());
-        }
-		
-	}
+		}
+            
 
 	@Override
 	public void atualizar(String nome, Produto produtoAtualizado) {
-        try {
-            for (Produto produto : produtos) {
-                if (produto.getNome().equalsIgnoreCase(nome)) {
-                    produto.setPreco(produtoAtualizado.getPreco());
-                    produto.setCategoria(produtoAtualizado.getCategoria());
-                    produto.setQuantidade(produtoAtualizado.getQuantidade());
-                    produto.setMarca(produtoAtualizado.getMarca());
-                    System.out.println("Produto atualizado!");
-                    return;
-                }
-            }
-            System.out.println("Produto não encontrado.");
-        } catch (Exception e) {
-            System.out.println("Erro ao atualizar Produto: " + e.getMessage());
-        }
-    }
+		 for (Produto produto : produtos) {
+	            if (produto.getNome().equals(nome)) {
+	                produto.setPreco(produtoAtualizado.getPreco());
+	                produto.setCategoria(produtoAtualizado.getCategoria());
+	                produto.setQuantidade(produtoAtualizado.getQuantidade());
+	                produto.setMarca(produtoAtualizado.getMarca());
+	                return;
+	            }
+		 }
+	        System.out.println("Produto não encontrado.");
+	    }
+	
+
+
+	public Produto buscar(String id) {
+	    for (Produto produto : produtos) {
+	      
+			if (produto.getId().equalsIgnoreCase(id)) {
+	            return produto;
+	        }
+	    }
+		return null;
+	}
 }
+
+	   

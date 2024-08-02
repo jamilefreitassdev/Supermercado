@@ -1,25 +1,25 @@
 package mercado;
 
 public class Cliente {
-	private Long id;
+	private String id;
     private String nome;
     private String endereco;
     private String contato;
     private String cpf;
     
-	public Cliente(Long id, String nome, String endereco, String contato, String cpf) {
+	public Cliente(String id, String nome, String endereco, String contato, String cpf) {
 		this.id = id;
 		this.nome = nome;
 		this.endereco = endereco;
 		this.contato = contato;
 		this.cpf = cpf;
 	}
-//ola
-	public Long getId() {
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

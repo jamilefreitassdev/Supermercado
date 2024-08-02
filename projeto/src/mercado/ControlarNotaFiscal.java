@@ -9,51 +9,34 @@ public class ControlarNotaFiscal implements Crud<NotaFiscal> {
 	 public ControlarNotaFiscal() {
 		 this.notasFiscais = new ArrayList<>();
 	 }
-	@Override
-	public void adicionar(NotaFiscal notaFiscal) {
-		try {
-            notasFiscais.add(notaFiscal);
-            System.out.println("Nota Fiscal adicionada!");
-        } catch (Exception e) {
-            System.out.println("Erro ao adicionar Nota Fiscal: " + e.getMessage());
-        }
-	}
-	@Override
-	public void deletar(String dataDeExpedicao) {
-		try {
-            notasFiscais.removeIf(notaFiscal -> notaFiscal.getId().toString().equalsIgnoreCase(dataDeExpedicao));
-            System.out.println("Nota Fiscal removida!");
-        } catch (Exception e) {
-            System.out.println("Erro ao remover Nota Fiscal: " + e.getMessage());
-        }
-	}
-	@Override
-	public void listar() {
-		try {
-            for (NotaFiscal notaFiscal : notasFiscais) {
-                System.out.println(notaFiscal);
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao listar Notas Fiscais: " + e.getMessage());
-        }
-		
-	}
-	@Override
-	public void atualizar(String dataDeExpedicao, NotaFiscal notaFiscalAtualizada) {
-		  try {
-	            for (NotaFiscal notaFiscal : notasFiscais) {
-	                if (notaFiscal.getId().toString().equalsIgnoreCase(dataDeExpedicao)) {
-	                    notaFiscal.setNumeroDaConta(notaFiscalAtualizada.getNumeroDaConta());
-	                    notaFiscal.setDataDeExpedicao(notaFiscalAtualizada.getDataDeExpedicao());
-	                    notaFiscal.setValor(notaFiscalAtualizada.getValor());
-	                    notaFiscal.setFornecedor(notaFiscalAtualizada.getFornecedor());
-	                    System.out.println("Nota Fiscal atualizada!");
-	                    return;
-	                }
-	            }
-	            System.out.println("Nota Fiscal não encontrada.");
-	        } catch (Exception e) {
-	            System.out.println("Erro ao atualizar Nota Fiscal: " + e.getMessage());
+	 private static int idCounter = 1;
+	    @Override
+	    public void adicionar(NotaFiscal notaFiscal) {
+	        this.notasFiscais.add(notaFiscal);
+	        notaFiscal.setId(String.format("%04d", idCounter++));
+	        }
+
+	    @Override
+	    public void listar() {
+	        for (NotaFiscal notaFiscal : notasFiscais) {
+	            System.out.println(notaFiscal);
+	        }
 	    }
+
+	    public NotaFiscal buscarNotaFiscalPorId(String id) {
+	        for (NotaFiscal notaFiscal : notasFiscais) {
+	            if (notaFiscal.getId().equals(id)) {
+	                return notaFiscal;
+	            }
+	        }
+	        return null;
+			
+		}
+		@Override
+		public void deletar(String id) {	
+		}
+		@Override
+		public void atualizar(String id, NotaFiscal item) {
+			
+		}
 	}
-}

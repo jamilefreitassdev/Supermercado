@@ -1,7 +1,7 @@
 package mercado;
 
 public class Produto {
-	 	private Long id;
+	 	private String id;
 	    private String codigoDeBarra;
 	    private String nome;
 	    private float preco;
@@ -9,7 +9,7 @@ public class Produto {
 	    private int quantidade;
 	    private String marca;
 	    
-		public Produto(Long id, String codigoDeBarra, String nome, float preco, String categoria, int quantidade,
+		public Produto(String id, String codigoDeBarra, String nome, float preco, String categoria, int quantidade,
 				String marca) {
 			this.id = id;
 			this.codigoDeBarra = codigoDeBarra;
@@ -21,11 +21,11 @@ public class Produto {
 			
 		}
 
-		public Long getId() {
+		public 	String getId() {
 			return id;
 		}
 
-		public void setId(Long id) {
+		public void setId(String id) {
 			this.id = id;
 		}
 

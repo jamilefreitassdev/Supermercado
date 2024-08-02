@@ -1,41 +1,48 @@
 package mercado;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ControlarCarrinho implements Crud<Carrinho>{
-private List<Carrinho> carrinhoDeCompras;
+public class ControlarCarrinho {
+	 private Map<Produto, Integer> carrinho;
 	
-	public ControlarCarrinho() {
-		this.carrinhoDeCompras = new ArrayList<>();
-	
-	}
+	 public ControlarCarrinho() {
+	        this.carrinho = new HashMap<>();
+	    }
+	 public void adicionar(Produto produto, int quantidade) {
+	        carrinho.put(produto, carrinho.getOrDefault(produto, 0) + quantidade);
+	    }
 
-	@Override
-	public void adicionar(Carrinho carrinho) {
-		 try {
-	            carrinhoDeCompras.add(carrinho);
-	            System.out.println(" adicionado!");
-	        } catch (Exception e) {
-	            System.out.println("Erro ao adicionar funcionário: " + e.getMessage());
+	    public void remover(String nomeProduto, int quantidade) {
+			Produto produtoParaRemover = null;
+	        for (Produto produto : carrinho.keySet()) {
+	            if (produto.getNome().equalsIgnoreCase(nomeProduto)) {
+	                int quantidadeAtual = carrinho.get(produto);
+	                if (quantidade >= quantidadeAtual) {
+	                    carrinho.remove(produto);
+	                } else {
+	                    carrinho.put(produto, quantidadeAtual - quantidade);
+	                }
+	                return;
+	            }
+	            if (produtoParaRemover != null) {
+	                carrinho.remove(produtoParaRemover);
+	            }
 	        }
-	}
+	    }
 
-	@Override
-	public void listar() {
-		// TODO Auto-generated method stub
-		
-	}
+	    public void listar() {
+	        for (Map.Entry<Produto, Integer> entry : carrinho.entrySet()) {
+	            System.out.println(entry.getKey() + " - Quantidade: " + entry.getValue());
+	        }
+	    }
 
-	@Override
-	public void atualizar(String identificador, Carrinho item) {
-		// TODO Auto-generated method stub
-		
+	    public void finalizarCompra() {
+	        float valorTotal = 0;
+	        for (Map.Entry<Produto, Integer> entry : carrinho.entrySet()) {
+	            valorTotal += entry.getKey().getPreco() * entry.getValue();
+	        }
+	        System.out.println("Valor Total da Compra: " + valorTotal);
+	        carrinho.clear();
+	    }
 	}
-
-	@Override
-	public void deletar(String identificador) {
-		// TODO Auto-generated method stub
-		
-	}
-}

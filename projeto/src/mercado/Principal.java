@@ -3,19 +3,19 @@ package mercado;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class Principal {
 
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) {
 
-	 	ControlarProduto controlarProduto = new ControlarProduto();
+        Scanner sc = new Scanner(System.in);
+
+        ControlarProduto controlarProduto = new ControlarProduto();
         ControlarFuncionario controlarFuncionario = new ControlarFuncionario();
         ControlarCliente controlarCliente = new ControlarCliente();
         ControlarFornecedor controlarFornecedor = new ControlarFornecedor();
         ControlarNotaFiscal controlarNotaFiscal = new ControlarNotaFiscal();
+        ControlarCarrinho controlarCarrinho = new ControlarCarrinho();
 
         while (true) {
             System.out.println("1. Gerenciar Produtos");
@@ -26,7 +26,7 @@ public class Principal {
             System.out.println("6. Gerenciar Carrinho de Compra");
             System.out.println("7. Sair");
 
-            int opcao = Integer.parseInt(sc.nextLine());
+            int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
 
             if (opcao == 7) {
                 break;
@@ -43,10 +43,13 @@ public class Principal {
                     gerenciarClientes(sc, controlarCliente);
                     break;
                 case 4:
-                    gerenciarFornecedores(sc, controlarFornecedor);
+                    gerenciarFornecedores(sc, controlarFornecedor, controlarProduto);
                     break;
                 case 5:
                     gerenciarNotasFiscais(sc, controlarNotaFiscal);
+                    break;
+                case 6:
+                    gerenciarCarrinho(sc, controlarCarrinho, controlarProduto);
                     break;
                 default:
                     System.out.println("Opção inválida.");
@@ -57,157 +60,83 @@ public class Principal {
         sc.close();
     }
 
-	private static void gerenciarProdutos(Scanner sc, ControlarProduto controller) {
-	    System.out.println("1. Adicionar Produto");
-	    System.out.println("2. Atualizar Produto");
-	    System.out.println("3. Deletar Produto");
-	    System.out.println("4. Listar Produtos");
+    private static void gerenciarProdutos(Scanner sc, ControlarProduto controller) {
+    	
+        System.out.println("1. Adicionar Produto");
+        System.out.println("2. Atualizar Produto");
+        System.out.println("3. Deletar Produto");
+        System.out.println("4. Listar Produtos");
 
-	    int opcao;
-	    try {
-	        opcao = Integer.parseInt(sc.nextLine());
-	    } catch (NumberFormatException e) {
-	        System.out.println("Entrada inválida. Por favor, insira um número.");
-	        return;
-	    }
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção: ");
+        switch (opcao) {
+            case 1:
+                adicionarProduto(sc, controller);
+                controller.listar(); 
+                break;
+            case 2:
+                atualizarProduto(sc, controller);
+                controller.listar(); 
+                break;
+            case 3:
+                deletarProduto(sc, controller);
+                controller.listar(); 
+                break;
+            case 4:
+                controller.listar();
+                break;
+            default:
+                System.out.println("Opção inválida.");
+                break;
+    	
+        }
+    }
+    private static void adicionarProduto(Scanner sc, ControlarProduto controller) {
+        String codigoDeBarra = lerEntradaValida(sc, "Digite o Código de Barra:", "\\d+");
+        String nome = lerEntradaValida(sc, "Digite o Nome:");
+        float preco = lerEntradaValidaFloat(sc, "Digite o Preço:");
+        String categoria = lerEntradaValida(sc, "Digite a Categoria:");
+        int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade:");
+        String marca = lerEntradaValida(sc, "Digite a Marca:");
 
-	    switch (opcao) {
-	        case 1:
-	            UUID id = UUID.randomUUID(); // Gerar o ID automaticamente
-	            String codigoDeBarra = "";
-	            String nome = "";
-	            float preco = 0.0f;
-	            String categoria = "";
-	            int quantidade = 0;
-	            String marca = "";
+        Produto produto = new Produto(null, codigoDeBarra, nome, preco, categoria, quantidade, marca);
+        controller.adicionar(produto);
+    }
 
-	            try {
-	                System.out.println("Digite o Código de Barra:");
-	                codigoDeBarra = sc.nextLine();
+    private static void atualizarProduto(Scanner sc, ControlarProduto controller) {
+        String nomeParaAtualizar = lerEntradaValida(sc, "Digite o nome do Produto a ser atualizado:");
+        float novoPreco = lerEntradaValidaFloat(sc, "Digite o Preço:");
+        String novaCategoria = lerEntradaValida(sc, "Digite a Categoria:");
+        int novaQuantidade = lerEntradaValidaInt(sc, "Digite a Quantidade:");
+        String novaMarca = lerEntradaValida(sc, "Digite a Marca:");
 
-	                // Verificação do formato do código de barras
-	                if (codigoDeBarra.isEmpty() || !codigoDeBarra.matches("\\d+")) {
-	                    throw new IllegalArgumentException("Código de barra inválido. Deve conter apenas números.");
-	                }
+        Produto produtoAtualizado = new Produto(null, null, nomeParaAtualizar, novoPreco, novaCategoria, novaQuantidade, novaMarca);
+        controller.atualizar(nomeParaAtualizar, produtoAtualizado);
+    }
+    private static void deletarProduto(Scanner sc, ControlarProduto controller) {
+        String idParaDeletar = lerEntradaValida(sc, "Digite o ID do Produto a ser deletado:");
+        controller.deletar(idParaDeletar);
+    }
 
-	                System.out.println("Digite o Nome:");
-	                nome = sc.nextLine();
-
-	                if (nome.isEmpty()) {
-	                    throw new IllegalArgumentException("Nome não pode ser vazio.");
-	                }
-
-	                System.out.println("Digite o Preço:");
-	                preco = Float.parseFloat(sc.nextLine());
-
-	                System.out.println("Digite a Categoria:");
-	                categoria = sc.nextLine();
-
-	                if (categoria.isEmpty()) {
-	                    throw new IllegalArgumentException("Categoria não pode ser vazia.");
-	                }
-
-	                System.out.println("Digite a Quantidade:");
-	                quantidade = Integer.parseInt(sc.nextLine());
-
-	                System.out.println("Digite a Marca:");
-	                marca = sc.nextLine();
-
-	                if (marca.isEmpty()) {
-	                    throw new IllegalArgumentException("Marca não pode ser vazia.");
-	                }
-	            } catch (NumberFormatException e) {
-	                System.out.println("Entrada inválida. Por favor, insira valores corretos.");
-	                return;
-	            } catch (IllegalArgumentException e) {
-	                System.out.println(e.getMessage());
-	                return;
-	            }
-
-	            Produto produto = new Produto(null, codigoDeBarra, nome, preco, categoria, quantidade, marca);
-	            controller.adicionar(produto);
-	            break;
-
-	        case 2:
-	            try {
-	                System.out.println("Digite o Nome do Produto a ser atualizado:");
-	                String nomeParaAtualizar = sc.nextLine();
-
-	                System.out.println("Digite o Preço:");
-	                float novoPreco = Float.parseFloat(sc.nextLine());
-	                System.out.println("Digite a Categoria:");
-	                String novaCategoria = sc.nextLine();
-	                System.out.println("Digite a Quantidade:");
-	                int novaQuantidade = Integer.parseInt(sc.nextLine());
-	                System.out.println("Digite a Marca:");
-	                String novaMarca = sc.nextLine();
-
-	                Produto produtoAtualizado = new Produto(null, null, nomeParaAtualizar, novoPreco, novaCategoria, novaQuantidade, novaMarca);
-	                controller.atualizar(nomeParaAtualizar, produtoAtualizado);
-	            } catch (NumberFormatException e) {
-	                System.out.println("Entrada inválida. Por favor, insira valores corretos.");
-	            }
-	            break;
-
-	        case 3:
-	            System.out.println("Digite o Nome do Produto a ser deletado:");
-	            String nomeParaDeletar = sc.nextLine();
-	            controller.deletar(nomeParaDeletar);
-	            break;
-
-	        case 4:
-	            controller.listar();
-	            break;
-
-	        default:
-	            System.out.println("Opção inválida.");
-	            break;
-	    }
-	}
     private static void gerenciarFuncionarios(Scanner sc, ControlarFuncionario controller) {
         System.out.println("1. Adicionar Funcionário");
         System.out.println("2. Atualizar Funcionário");
         System.out.println("3. Deletar Funcionário");
         System.out.println("4. Listar Funcionários");
 
-        int opcao = Integer.parseInt(sc.nextLine());
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
 
         switch (opcao) {
             case 1:
-                System.out.println("Digite o Nome:");
-                String nome = sc.nextLine();
-                System.out.println("Digite o Cargo:");
-                String cargo = sc.nextLine();
-                System.out.println("Digite o Salário:");
-                float salario = Float.parseFloat(sc.nextLine());
-                System.out.println("Digite o CPF:");
-                String cpf = sc.nextLine();
-                System.out.println("Digite as Horas Trabalhadas:");
-                int horasTrabalhadas = Integer.parseInt(sc.nextLine());
-
-                Funcionario funcionario = new Funcionario(null, nome, cargo, salario, cpf, horasTrabalhadas);
-                controller.adicionar(funcionario);
+                adicionarFuncionario(sc, controller);
+                controller.listar(); 
                 break;
             case 2:
-            	System.out.println("Digite o Nome:");
-                String novoNome = sc.nextLine();
-                System.out.println("Digite o CPF do Funcionário a ser atualizado:");
-                String cpfParaAtualizar = sc.nextLine();
-
-                System.out.println("Digite o Salário:");
-                float novoSalario = Float.parseFloat(sc.nextLine());
-                System.out.println("Digite o Cargo:");
-                String novoCargo = sc.nextLine();
-                System.out.println("Digite as Horas Trabalhadas:");
-                int novasHorasTrabalhadas = Integer.parseInt(sc.nextLine());
-
-                Funcionario funcionarioAtualizado = new Funcionario(null, novoNome, novoCargo, novoSalario, cpfParaAtualizar, novasHorasTrabalhadas);
-                controller.atualizar(cpfParaAtualizar, funcionarioAtualizado);
+                atualizarFuncionario(sc, controller);
+                controller.listar(); 
                 break;
             case 3:
-                System.out.println("Digite o CPF do Funcionário a ser deletado:");
-                String cpfParaDeletar = sc.nextLine();
-                controller.deletar(cpfParaDeletar);
+                deletarFuncionario(sc, controller);
+                controller.listar(); 
                 break;
             case 4:
                 controller.listar();
@@ -216,6 +145,33 @@ public class Principal {
                 System.out.println("Opção inválida.");
                 break;
         }
+    }
+
+    private static void adicionarFuncionario(Scanner sc, ControlarFuncionario controller) {
+        String nome = lerEntradaValida(sc, "Digite o Nome:");
+        String cargo = lerEntradaValida(sc, "Digite o Cargo:");
+        float salario = lerEntradaValidaFloat(sc, "Digite o Salário:");
+        String cpf = lerEntradaValidaCpf(sc, "Digite o CPF:");
+        int horasTrabalhadas = lerEntradaValidaInt(sc, "Digite as Horas Trabalhadas:");
+
+        Funcionario funcionario = new Funcionario(null, nome, cargo, salario, cpf, horasTrabalhadas);
+        controller.adicionar(funcionario);
+    }
+
+    private static void atualizarFuncionario(Scanner sc, ControlarFuncionario controller) {
+        String idParaAtualizar = lerEntradaValida(sc, "Digite o ID do Funcionário a ser atualizado:");
+        String novoNome = lerEntradaValida(sc, "Digite o Nome completo:");
+        float novoSalario = lerEntradaValidaFloat(sc, "Digite o Salário:");
+        String novoCargo = lerEntradaValida(sc, "Digite o Cargo:");
+        int novasHorasTrabalhadas = lerEntradaValidaInt(sc, "Digite as Horas Trabalhadas:");
+
+        Funcionario funcionarioAtualizado = new Funcionario(idParaAtualizar, novoNome, novoCargo, novoSalario, idParaAtualizar, novasHorasTrabalhadas);
+        controller.atualizar(idParaAtualizar, funcionarioAtualizado);
+    }
+
+    private static void deletarFuncionario(Scanner sc, ControlarFuncionario controller) {
+        String idParaDeletar = lerEntradaValida(sc, "Digite o ID do Funcionário a ser deletado:");
+        controller.deletar(idParaDeletar);
     }
 
     private static void gerenciarClientes(Scanner sc, ControlarCliente controller) {
@@ -224,40 +180,20 @@ public class Principal {
         System.out.println("3. Deletar Cliente");
         System.out.println("4. Listar Clientes");
 
-        int opcao = Integer.parseInt(sc.nextLine());
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
 
         switch (opcao) {
             case 1:
-                System.out.println("Digite o ID:");
-                Long id = Long.parseLong(sc.nextLine());
-                System.out.println("Digite o Nome:");
-                String nome = sc.nextLine();
-                System.out.println("Digite o Endereço:");
-                String endereco = sc.nextLine();
-                System.out.println("Digite o Contato:");
-                String contato = sc.nextLine();
-                System.out.println("Digite o CPF:");
-                String cpf = sc.nextLine();
-
-                Cliente cliente = new Cliente(id, nome, endereco, contato, cpf);
-                controller.adicionar(cliente);
+                adicionarCliente(sc, controller);
+                controller.listar(); 
                 break;
             case 2:
-                System.out.println("Digite o CPF do Cliente a ser atualizado:");
-                String cpfParaAtualizar = sc.nextLine();
-
-                System.out.println("Digite o Endereço:");
-                String novoEndereco = sc.nextLine();
-                System.out.println("Digite o Contato:");
-                String novoContato = sc.nextLine();
-
-                Cliente clienteAtualizado = new Cliente(null, null, novoEndereco, novoContato, cpfParaAtualizar);
-                controller.atualizar(cpfParaAtualizar, clienteAtualizado);
+                atualizarCliente(sc, controller);
+                controller.listar(); 
                 break;
             case 3:
-                System.out.println("Digite o CPF do Cliente a ser deletado:");
-                String cpfParaDeletar = sc.nextLine();
-                controller.deletar(cpfParaDeletar);
+                deletarCliente(sc, controller);
+                controller.listar(); 
                 break;
             case 4:
                 controller.listar();
@@ -268,91 +204,51 @@ public class Principal {
         }
     }
 
-    private static void gerenciarFornecedores(Scanner sc, ControlarFornecedor controller) {
+    private static void adicionarCliente(Scanner sc, ControlarCliente controller) {
+        String nome = lerEntradaValida(sc, "Digite o Nome:");
+        String endereco = lerEntradaValida(sc, "Digite o Endereço:");
+        String contato = lerEntradaValida(sc, "Digite o Contato:", "\\d{11}");
+        String cpf = lerEntradaValida(sc, "Digite o CPF:", "\\d{11}");
+
+        Cliente cliente = new Cliente(null, nome, endereco, contato, cpf);
+        controller.adicionar(cliente);
+    }
+
+    private static void atualizarCliente(Scanner sc, ControlarCliente controller) {
+        String cpfParaAtualizar = lerEntradaValida(sc, "Digite o CPF do Cliente a ser atualizado:", "\\d{11}");
+        String nomeNovo = lerEntradaValida(sc, "Digite o Nome:");
+        String novoEndereco = lerEntradaValida(sc, "Digite o Endereço:");
+        String novoContato = lerEntradaValida(sc, "Digite o Contato:");
+
+        Cliente clienteAtualizado = new Cliente(null, nomeNovo, novoEndereco, novoContato, cpfParaAtualizar);
+        controller.atualizar(cpfParaAtualizar, clienteAtualizado);
+    }
+
+    private static void deletarCliente(Scanner sc, ControlarCliente controller) {
+        String idParaDeletar = lerEntradaValida(sc, "Digite o CPF do Cliente a ser deletado: ");
+        controller.deletar(idParaDeletar);
+    }
+
+    private static void gerenciarFornecedores(Scanner sc, ControlarFornecedor controller, ControlarProduto controllerProduto) {
         System.out.println("1. Adicionar Fornecedor");
         System.out.println("2. Atualizar Fornecedor");
         System.out.println("3. Deletar Fornecedor");
         System.out.println("4. Listar Fornecedores");
 
-        int opcao = Integer.parseInt(sc.nextLine());
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
 
         switch (opcao) {
             case 1:
-                System.out.println("Digite o ID:");
-                Long id = Long.parseLong(sc.nextLine());
-                System.out.println("Digite o Nome:");
-                String nome = sc.nextLine();
-                System.out.println("Digite o Contato:");
-                String contato = sc.nextLine();
-                System.out.println("Digite o CNPJ:");
-                String cnpj = sc.nextLine();
-                System.out.println("Digite a quantidade de produtos fornecidos:");
-                int quantidade = Integer.parseInt(sc.nextLine());
-
-                List<Produto> produtosFornecidos = new ArrayList<>();
-                for (int i = 0; i < quantidade; i++) {
-                    System.out.println("Digite o ID do Produto:");
-                    Long produtoId = Long.parseLong(sc.nextLine());
-                    System.out.println("Digite o Código de Barra:");
-                    String codigoDeBarra = sc.nextLine();
-                    System.out.println("Digite o Nome do Produto:");
-                    String nomeProduto = sc.nextLine();
-                    System.out.println("Digite o Preço do Produto:");
-                    float preco = Float.parseFloat(sc.nextLine());
-                    System.out.println("Digite a Categoria do Produto:");
-                    String categoria = sc.nextLine();
-                    System.out.println("Digite a Quantidade do Produto:");
-                    int quantidadeProduto = Integer.parseInt(sc.nextLine());
-                    System.out.println("Digite a Marca do Produto:");
-                    String marca = sc.nextLine();
-
-                    Produto produto = new Produto(produtoId, codigoDeBarra, nomeProduto, preco, categoria, quantidadeProduto, marca);
-                    produtosFornecidos.add(produto);
-                }
-
-                Fornecedor fornecedor = new Fornecedor(id, nome, produtosFornecidos, cnpj, contato);
-                controller.adicionar(fornecedor);
+                adicionarFornecedor(sc, controller);
+                controller.listar(); 
                 break;
             case 2:
-            	 System.out.println("Digite o Nome:");
-                 String nomeNovo = sc.nextLine();
-            	System.out.println("Digite a quantidade de produtos fornecidos:");
-                int quantidade1 = Integer.parseInt(sc.nextLine());
-
-                List<Produto> produtosFornecidos1 = new ArrayList<>();
-                for (int i = 0; i < quantidade1; i++) {
-                    System.out.println("Digite o ID do Produto:");
-                    Long produtoId = Long.parseLong(sc.nextLine());
-                    System.out.println("Digite o Código de Barra:");
-                    String codigoDeBarra = sc.nextLine();
-                    System.out.println("Digite o Nome do Produto:");
-                    String nomeProduto = sc.nextLine();
-                    System.out.println("Digite o Preço do Produto:");
-                    float preco = Float.parseFloat(sc.nextLine());
-                    System.out.println("Digite a Categoria do Produto:");
-                    String categoria = sc.nextLine();
-                    System.out.println("Digite a Quantidade do Produto:");
-                    int quantidadeProduto = Integer.parseInt(sc.nextLine());
-                    System.out.println("Digite a Marca do Produto:");
-                    String marca = sc.nextLine();
-
-                    Produto produto = new Produto(produtoId, codigoDeBarra, nomeProduto, preco, categoria, quantidadeProduto, marca);
-                    produtosFornecidos1.add(produto);
-                }
-
-                System.out.println("Digite o CNPJ do Fornecedor a ser atualizado:");
-                String cnpjParaAtualizar = sc.nextLine();
-
-                System.out.println("Digite o Contato:");
-                String novoContato = sc.nextLine();
-
-                Fornecedor fornecedorAtualizado = new Fornecedor(null, nomeNovo, produtosFornecidos1, cnpjParaAtualizar, novoContato);
-                controller.atualizar(cnpjParaAtualizar, fornecedorAtualizado);
+                atualizarFornecedor(sc, controller, controllerProduto);
+                controller.listar(); 
                 break;
             case 3:
-                System.out.println("Digite o CNPJ do Fornecedor a ser deletado:");
-                String cnpjParaDeletar = sc.nextLine();
-                controller.deletar(cnpjParaDeletar);
+                deletarFornecedor(sc, controller);
+                controller.listar(); 
                 break;
             case 4:
                 controller.listar();
@@ -363,32 +259,197 @@ public class Principal {
         }
     }
 
+    private static void adicionarFornecedor(Scanner sc, ControlarFornecedor controller) {
+        String id = lerEntradaValida(sc, "Digite o ID do Fornecedor:");
+        String nome = lerEntradaValida(sc, "Digite o Nome:");
+        List<Produto> produtosFornecidos = new ArrayList<>(); 
+        String contatoNovo = lerEntradaValida(sc, "Digite o Contato:");
+        String cnpj = lerEntradaValida(sc, "Digite o CNPJ:", "\\d{14}");
+
+        Fornecedor fornecedor = new Fornecedor(id, nome, produtosFornecidos, contatoNovo, cnpj);
+        controller.adicionar(fornecedor);
+    }
+    
+    private static void atualizarFornecedor(Scanner sc, ControlarFornecedor controladorFornecedor, ControlarProduto controllerProduto) {
+        
+        String id = lerEntradaValida(sc, "Digite o ID do Fornecedor:");
+        
+        Fornecedor fornecedorExistente = controladorFornecedor.buscarFornecedorPorId(id);
+        
+        if (fornecedorExistente != null) {
+            String novoNome = lerEntradaValida(sc, "Digite o novo Nome:");
+            String novoCNPJ = lerEntradaValida(sc, "Digite o novo CNPJ:", "\\d{14}");
+            String novoContato = lerEntradaValida(sc, "Digite o novo Contato:");
+            
+            List<Produto> novosProdutos = new ArrayList<>();
+            String adicionarMaisProdutos = "S";
+            
+            while (adicionarMaisProdutos.equalsIgnoreCase("S")) {
+                String idProduto = lerEntradaValida(sc, "Digite o ID do Produto:");
+                Produto produto = controllerProduto.buscar(idProduto);
+                
+                if (produto != null) {
+                    novosProdutos.add(produto);
+                } else {
+                    System.out.println("Produto não encontrado.");
+                }
+                
+                adicionarMaisProdutos = lerEntradaValida(sc, "Deseja adicionar mais produtos? (S/N):");
+            }
+            
+            Fornecedor fornecedorAtualizado = new Fornecedor(id, novoNome, novosProdutos, novoContato, novoCNPJ);
+            controladorFornecedor.atualizar(id, fornecedorAtualizado);
+            
+            System.out.println("Fornecedor atualizado com sucesso.");
+        } else {
+            System.out.println("Fornecedor não encontrado.");
+        }
+    }
+    private static void deletarFornecedor(Scanner sc, ControlarFornecedor controller) {
+        String cnpjParaDeletar = lerEntradaValida(sc, "Digite o CNPJ do Fornecedor a ser deletado:", "\\d{14}");
+        controller.deletar(cnpjParaDeletar);
+    }
+ 
+    
     private static void gerenciarNotasFiscais(Scanner sc, ControlarNotaFiscal controller) {
         System.out.println("1. Adicionar Nota Fiscal");
         System.out.println("2. Listar Notas Fiscais");
 
-        int opcao = Integer.parseInt(sc.nextLine());
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
 
         switch (opcao) {
             case 1:
-                System.out.println("Digite o ID:");
-                Long id = Long.parseLong(sc.nextLine());
-                System.out.println("Digite a data:");
-                String data = sc.nextLine();
-                System.out.println("Digite a descrição:");
-                String descricao = sc.nextLine();
-                System.out.println("Digite o valor total:");
-                float valorTotal = Float.parseFloat(sc.nextLine());
-
-                NotaFiscal notaFiscal = new NotaFiscal(id, data, descricao, valorTotal, null);
-                controller.adicionar(notaFiscal);
+                adicionarNotaFiscal(sc, controller);
+                controller.listar(); 
                 break;
             case 2:
-                controller.listar();
+                listarNotaFiscal(controller);
                 break;
             default:
                 System.out.println("Opção inválida.");
                 break;
         }
     }
-	}
+
+    private static void adicionarNotaFiscal(Scanner sc, ControlarNotaFiscal controller) {
+        String id = lerEntradaValida(sc, "Digite o ID da Nota Fiscal:");
+        String numeroDaConta = lerEntradaValida(sc, "Digite o Número da conta:");
+        String data = lerEntradaValida(sc, "Digite a Data da Nota (dd/mm/yyyy):");
+        float valor = lerEntradaValidaFloat(sc, "Digite o valor:");
+        String fornecedorCpf = lerEntradaValida(sc, "Digite o CPF do Fornecedor:", "\\d{11}");
+        String detalhes = lerEntradaValida(sc, "Digite os Detalhes da Nota:");
+
+        NotaFiscal notaFiscal = new NotaFiscal(id, numeroDaConta, data, valor, fornecedorCpf, detalhes);
+        controller.adicionar(notaFiscal);
+    }
+    
+    private static void listarNotaFiscal(ControlarNotaFiscal controller) {
+        controller.listar();
+    }
+
+    private static void gerenciarCarrinho(Scanner sc, ControlarCarrinho controlarCarrinho, ControlarProduto controlarProduto) {
+        System.out.println("1. Adicionar Produto ao Carrinho");
+        System.out.println("2. Remover Produto do Carrinho");
+        System.out.println("3. Listar Produtos no Carrinho");
+        System.out.println("4. Finalizar Compra");
+
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
+
+        switch (opcao) {
+            case 1:
+                adicionarProdutoAoCarrinho(sc, controlarCarrinho, controlarProduto);
+                controlarCarrinho.listar(); 
+                break;
+            case 2:
+                removerProdutoDoCarrinho(sc, controlarCarrinho);
+                controlarCarrinho.listar(); 
+                break;
+            case 3:
+                controlarCarrinho.listar();
+                break;
+            case 4:
+                finalizarCompra(controlarCarrinho);
+                break;
+            default:
+                System.out.println("Opção inválida.");
+                break;
+        }
+    }
+
+
+    private static void adicionarProdutoAoCarrinho(Scanner sc, ControlarCarrinho controlarCarrinho, ControlarProduto controlarProduto) {
+        String nome = lerEntradaValida(sc, "Digite o Nome do Produto:");
+        int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade:");
+
+        Produto produto = controlarProduto.buscar(nome);
+        if (produto != null) {
+            controlarCarrinho.adicionar(produto, quantidade);
+            System.out.println("Produto adicionado ao carrinho.");
+        } else {
+            System.out.println("Produto não encontrado.");
+        }
+
+    }
+    private static void removerProdutoDoCarrinho(Scanner sc, ControlarCarrinho controlarCarrinho) {
+        String nome = lerEntradaValida(sc, "Digite o Nome do Produto:");
+        int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade para Remover:");
+
+        controlarCarrinho.remover(nome, quantidade);
+        System.out.println("Produto removido do carrinho.");
+    }
+   
+    private static void finalizarCompra(ControlarCarrinho controlarCarrinho) {
+        controlarCarrinho.finalizarCompra();
+        System.out.println("Compra finalizada.");
+    }
+    
+    private static String lerEntradaValida(Scanner sc, String mensagem) {
+        System.out.println(mensagem);
+        return sc.nextLine().trim();
+    }
+
+    private static float lerEntradaValidaFloat(Scanner sc, String mensagem) {
+        float numero;
+        while (true) {
+            System.out.println(mensagem);
+            try {
+                numero = Float.parseFloat(sc.nextLine().trim());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número decimal.");
+            }
+        }
+        return numero;
+    }
+
+    private static int lerEntradaValidaInt(Scanner sc, String mensagem) {
+        int numero;
+        while (true) {
+            System.out.println(mensagem);
+            try {
+                numero = Integer.parseInt(sc.nextLine().trim());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número inteiro.");
+            }
+        }
+        return numero;
+    }
+
+    private static String lerEntradaValida(Scanner sc, String mensagem, String regex) {
+        String entrada;
+        do {
+            System.out.println(mensagem);
+            entrada = sc.nextLine().trim();
+            if (!entrada.matches(regex)) {
+                System.out.println("Entrada inválida. Tente novamente.");
+            }
+        } while (!entrada.matches(regex));
+        return entrada;
+    }
+
+    private static String lerEntradaValidaCpf(Scanner sc, String mensagem) {
+        return lerEntradaValida(sc, mensagem, "\\d{11}");
+    }
+    }
+

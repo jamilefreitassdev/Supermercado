@@ -3,13 +3,13 @@ package mercado;
 import java.util.List;
 
 public class Fornecedor {
-	    private Long id;
+	    private String id;
 	    private String nome;
 	    private List<Produto> produtosFornecidos;
 	    private String contato;
 	    private String cnpj;
 	    
-		public Fornecedor(Long id, String nome, List<Produto> produtosFornecidos, String contato, String cnpj) {
+		public Fornecedor(String id, String nome, List<Produto> produtosFornecidos, String contato, String cnpj) {
 			this.id = id;
 			this.nome = nome;
 			this.produtosFornecidos = produtosFornecidos;
@@ -17,11 +17,11 @@ public class Fornecedor {
 			this.cnpj = cnpj;
 		}
 
-		public Long getId() {
+		public String getId() {
 			return id;
 		}
 
-		public void setId(Long id) {
+		public void setId(String id) {
 			this.id = id;
 		}
 
