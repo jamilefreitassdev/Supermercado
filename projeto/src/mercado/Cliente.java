@@ -1,6 +1,9 @@
 package mercado;
 
-public class Cliente {
+import java.io.Serializable;
+
+public class Cliente implements Serializable {
+    private static final long serialVersionUID = 1L; 
 	private String id;
     private String nome;
     private String endereco;
@@ -57,7 +60,16 @@ public class Cliente {
 
 	@Override
 	public String toString() {
-		return "Cliente [id=" + id + ", nome=" + nome + ", endereco=" + endereco + ", contato=" + contato + ", cpf="
-				+ cpf + "]";
-	}
+		return String.format("Cliente:\n" +
+                "ID: %s\n" +
+                "Nome: %s\n" +
+                "Endereço: %s\n" +
+                "Contato: %s\n" +
+                "CPF: %s",
+                id,
+                nome,
+                endereco,
+                contato,
+                cpf);
+}
 }

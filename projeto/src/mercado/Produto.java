@@ -1,6 +1,9 @@
 package mercado;
 
-public class Produto {
+import java.io.Serializable;
+
+public class Produto implements Serializable {
+    private static final long serialVersionUID = 1L;
 	 	private String id;
 	    private String codigoDeBarra;
 	    private String nome;
@@ -79,9 +82,21 @@ public class Produto {
 
 		@Override
 		public String toString() {
-			return "Produto [id=" + id + ", codigoDeBarra=" + codigoDeBarra + ", nome=" + nome + ", preco=" + preco
-					+ ", categoria=" + categoria + ", quantidade=" + quantidade + ", marca=" + marca + "]";
-		}
+			return String.format("Produto:\n" +
+                    "ID: %s\n" +
+                    "Código de Barra: %s\n" +
+                    "Nome: %s\n" +
+                    "Preço: R$ %.2f\n" +
+                    "Categoria: %s\n" +
+                    "Quantidade: %d\n" +
+                    "Marca: %s",
+                    id,
+                    codigoDeBarra,
+                    nome,
+                    preco,
+                    categoria,
+                    quantidade,
+                    marca);}
 	    
 	    
 }

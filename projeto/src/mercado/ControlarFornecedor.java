@@ -1,5 +1,10 @@
 package mercado;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,5 +53,26 @@ public class ControlarFornecedor implements Crud<Fornecedor> {
             }
         }
         return null;
+    }
+    
+    // Método para serializar a lista de fornecedores
+    public void serializarFornecedores(String nomeArquivo) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomeArquivo))) {
+            oos.writeObject(fornecedores);
+            System.out.println("Fornecedores serializados com sucesso!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método para desserializar a lista de fornecedores
+    @SuppressWarnings("unchecked")
+	public void desserializarFornecedores(String nomeArquivo) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomeArquivo))) {
+            fornecedores = (List<Fornecedor>) ois.readObject();
+            System.out.println("Fornecedores desserializados com sucesso!");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

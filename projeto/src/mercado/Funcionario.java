@@ -1,6 +1,9 @@
 package mercado;
 
-public class Funcionario {
+import java.io.Serializable;
+
+public class Funcionario implements Serializable {
+    private static final long serialVersionUID = 1L;
 		private String id;
 	    private String nome;
 	    private String cargo;
@@ -67,7 +70,19 @@ public class Funcionario {
 
 		@Override
 		public String toString() {
-			return "Funcionario [id=" + id + ", nome=" + nome + ", cargo=" + cargo + ", salario=" + salario + ", cpf="
-					+ cpf + ", horasTrabalhadas=" + horasTrabalhadas + "]";
+			return String.format("Funcionário:\n" +
+                    "ID: %s\n" +
+                    "Nome: %s\n" +
+                    "Cargo: %s\n" +
+                    "Salário: R$ %.2f\n" +
+                    "CPF: %s\n" +
+                    "Horas Trabalhadas: %d",
+                    id,
+                    nome,
+                    cargo,
+                    salario,
+                    cpf,
+                    horasTrabalhadas);
 		}
 }
+		

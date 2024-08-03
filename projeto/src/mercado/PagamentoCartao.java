@@ -11,7 +11,41 @@ public class PagamentoCartao extends FormaDePagamento{
 		this.numeroCartao = numeroCartao;
 		this.validade = validade;
 		this.cvv = cvv;
-		this.nomeTitular = nomeTitular;  
+		this.nomeTitular = nomeTitular; 
+		
+		
+	}
+
+	public String getNumeroCartao() {
+		return numeroCartao;
+	}
+
+	public void setNumeroCartao(String numeroCartao) {
+		this.numeroCartao = numeroCartao;
+	}
+
+	public String getValidade() {
+		return validade;
+	}
+
+	public void setValidade(String validade) {
+		this.validade = validade;
+	}
+
+	public String getCvv() {
+		return cvv;
+	}
+
+	public void setCvv(String cvv) {
+		this.cvv = cvv;
+	}
+
+	public String getNomeTitular() {
+		return nomeTitular;
+	}
+
+	public void setNomeTitular(String nomeTitular) {
+		this.nomeTitular = nomeTitular;
 	}
 
 	@Override

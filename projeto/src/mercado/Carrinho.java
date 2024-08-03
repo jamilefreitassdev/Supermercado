@@ -1,9 +1,11 @@
 package mercado;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Carrinho {
+public class Carrinho implements Serializable {
+    private static final long serialVersionUID = 1L;
 	private String id;
 	private FormaDePagamento formaDePagamento;
 	private List<Produto> produtos;
@@ -35,4 +37,15 @@ public class Carrinho {
 		return produtos;
 	
 	}
+
+	@Override
+	public String toString() {
+		return String.format("Carrinho:\n" +
+                "ID: %s\n" +
+                "Forma de Pagamento: %s\n" +
+                "Produtos: %s",
+                id,
+                formaDePagamento,
+                produtos.isEmpty() ? "Nenhum produto" : produtos);
+}
 }

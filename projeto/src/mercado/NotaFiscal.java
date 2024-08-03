@@ -1,6 +1,9 @@
 package mercado;
 
-public class NotaFiscal {
+import java.io.Serializable;
+
+public class NotaFiscal implements Serializable {
+    private static final long serialVersionUID = 1L;
 	 private String id;
 	    private String numeroDaConta;
 	    private String data;
@@ -60,8 +63,19 @@ public class NotaFiscal {
 
 	@Override
 	public String toString() {
-		return "NotaFiscal [id=" + id + ", numeroDaConta=" + numeroDaConta + ", data=" + data + ", valor=" + valor
-				+ ", fornecedorCpf=" + fornecedorCpf + ", detalhes=" + detalhes + "]";
-	}
+		return String.format("Nota Fiscal:\n" +
+                "ID: %s\n" +
+                "Número da Conta: %s\n" +
+                "Data: %s\n" +
+                "Valor: R$ %.2f\n" +
+                "Fornecedor CPF: %s\n" +
+                "Detalhes: %s",
+                id, 
+                numeroDaConta.isEmpty() ? "Não especificado" : numeroDaConta,
+                data == null ? "Não especificado" : data,
+                valor,
+                fornecedorCpf,
+                detalhes);
+}
 	
 }

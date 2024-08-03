@@ -2,6 +2,7 @@ package mercado;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Principal {
@@ -94,7 +95,7 @@ public class Principal {
         String codigoDeBarra = lerEntradaValida(sc, "Digite o Código de Barra:", "\\d+");
         String nome = lerEntradaValida(sc, "Digite o Nome:");
         float preco = lerEntradaValidaFloat(sc, "Digite o Preço:");
-        String categoria = lerEntradaValida(sc, "Digite a Categoria:");
+        String categoria = lerEntradaValidaCategoria(sc, "Digite a Categoria:");
         int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade:");
         String marca = lerEntradaValida(sc, "Digite a Marca:");
 
@@ -216,7 +217,7 @@ public class Principal {
 
     private static void atualizarCliente(Scanner sc, ControlarCliente controller) {
         String cpfParaAtualizar = lerEntradaValida(sc, "Digite o CPF do Cliente a ser atualizado:", "\\d{11}");
-        String nomeNovo = lerEntradaValida(sc, "Digite o Nome:");
+        String nomeNovo = lerEntradaValidaNome(sc, "Digite o Nome:");
         String novoEndereco = lerEntradaValida(sc, "Digite o Endereço:");
         String novoContato = lerEntradaValida(sc, "Digite o Contato:");
 
@@ -225,7 +226,7 @@ public class Principal {
     }
 
     private static void deletarCliente(Scanner sc, ControlarCliente controller) {
-        String idParaDeletar = lerEntradaValida(sc, "Digite o CPF do Cliente a ser deletado: ");
+        String idParaDeletar = lerEntradaValidaCpf(sc, "Digite o CPF do Cliente a ser deletado: ");
         controller.deletar(idParaDeletar);
     }
 
@@ -260,13 +261,12 @@ public class Principal {
     }
 
     private static void adicionarFornecedor(Scanner sc, ControlarFornecedor controller) {
-        String id = lerEntradaValida(sc, "Digite o ID do Fornecedor:");
-        String nome = lerEntradaValida(sc, "Digite o Nome:");
+        String nome = lerEntradaValidaNome(sc, "Digite o Nome:");
         List<Produto> produtosFornecidos = new ArrayList<>(); 
         String contatoNovo = lerEntradaValida(sc, "Digite o Contato:");
         String cnpj = lerEntradaValida(sc, "Digite o CNPJ:", "\\d{14}");
 
-        Fornecedor fornecedor = new Fornecedor(id, nome, produtosFornecidos, contatoNovo, cnpj);
+        Fornecedor fornecedor = new Fornecedor(null, nome, produtosFornecidos, contatoNovo, cnpj);
         controller.adicionar(fornecedor);
     }
     
@@ -277,7 +277,7 @@ public class Principal {
         Fornecedor fornecedorExistente = controladorFornecedor.buscarFornecedorPorId(id);
         
         if (fornecedorExistente != null) {
-            String novoNome = lerEntradaValida(sc, "Digite o novo Nome:");
+            String novoNome = lerEntradaValidaNome(sc, "Digite o novo Nome:");
             String novoCNPJ = lerEntradaValida(sc, "Digite o novo CNPJ:", "\\d{14}");
             String novoContato = lerEntradaValida(sc, "Digite o novo Contato:");
             
@@ -332,14 +332,13 @@ public class Principal {
     }
 
     private static void adicionarNotaFiscal(Scanner sc, ControlarNotaFiscal controller) {
-        String id = lerEntradaValida(sc, "Digite o ID da Nota Fiscal:");
         String numeroDaConta = lerEntradaValida(sc, "Digite o Número da conta:");
         String data = lerEntradaValida(sc, "Digite a Data da Nota (dd/mm/yyyy):");
         float valor = lerEntradaValidaFloat(sc, "Digite o valor:");
         String fornecedorCpf = lerEntradaValida(sc, "Digite o CPF do Fornecedor:", "\\d{11}");
         String detalhes = lerEntradaValida(sc, "Digite os Detalhes da Nota:");
 
-        NotaFiscal notaFiscal = new NotaFiscal(id, numeroDaConta, data, valor, fornecedorCpf, detalhes);
+        NotaFiscal notaFiscal = new NotaFiscal(null, numeroDaConta, data, valor, fornecedorCpf, detalhes);
         controller.adicionar(notaFiscal);
     }
     
@@ -352,23 +351,27 @@ public class Principal {
         System.out.println("2. Remover Produto do Carrinho");
         System.out.println("3. Listar Produtos no Carrinho");
         System.out.println("4. Finalizar Compra");
+        System.out.println("5. Definir Forma de Pagamento"); // Adicionando a opção para definir a forma de pagamento
 
         int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
 
         switch (opcao) {
             case 1:
                 adicionarProdutoAoCarrinho(sc, controlarCarrinho, controlarProduto);
-                controlarCarrinho.listar(); 
+                controlarCarrinho.listar();
                 break;
             case 2:
                 removerProdutoDoCarrinho(sc, controlarCarrinho);
-                controlarCarrinho.listar(); 
+                controlarCarrinho.listar();
                 break;
             case 3:
                 controlarCarrinho.listar();
                 break;
             case 4:
-                finalizarCompra(controlarCarrinho);
+                finalizarCompra(sc, controlarCarrinho);
+                break;
+            case 5:
+                definirFormaDePagamento(sc, controlarCarrinho);
                 break;
             default:
                 System.out.println("Opção inválida.");
@@ -376,9 +379,8 @@ public class Principal {
         }
     }
 
-
     private static void adicionarProdutoAoCarrinho(Scanner sc, ControlarCarrinho controlarCarrinho, ControlarProduto controlarProduto) {
-        String nome = lerEntradaValida(sc, "Digite o Nome do Produto:");
+        String nome = lerEntradaValidaNome(sc, "Digite o Nome do Produto:");
         int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade:");
 
         Produto produto = controlarProduto.buscar(nome);
@@ -388,32 +390,99 @@ public class Principal {
         } else {
             System.out.println("Produto não encontrado.");
         }
-
     }
-    private static void removerProdutoDoCarrinho(Scanner sc, ControlarCarrinho controlarCarrinho) {
-        String nome = lerEntradaValida(sc, "Digite o Nome do Produto:");
-        int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade para Remover:");
 
+    private static void removerProdutoDoCarrinho(Scanner sc, ControlarCarrinho controlarCarrinho) {
+        String nome = lerEntradaValidaNome(sc, "Digite o Nome do Produto:");
+        int quantidade = lerEntradaValidaInt(sc, "Digite a Quantidade para Remover:");
         controlarCarrinho.remover(nome, quantidade);
         System.out.println("Produto removido do carrinho.");
     }
-   
-    private static void finalizarCompra(ControlarCarrinho controlarCarrinho) {
-        controlarCarrinho.finalizarCompra();
-        System.out.println("Compra finalizada.");
+    private static void definirFormaDePagamento(Scanner sc, ControlarCarrinho controlarCarrinho) {
+        System.out.println("Escolha a forma de pagamento:");
+        System.out.println("1. Cartão de Crédito");
+        System.out.println("2. Pix");
+
+        int opcao = lerEntradaValidaInt(sc, "Escolha uma opção:");
+        FormaDePagamento formaDePagamento;
+        switch (opcao) {
+            case 1:
+                String numeroCartao = lerEntradaValida(sc, "Digite o número do cartão:", "\\d{12}");
+                String validade = lerEntradaValida(sc, "Digite a validade do cartão:", "\\d{4}");
+                String cvv = lerEntradaValida(sc, "Digite o CVV:", "\\d{3}");
+                String nomeTitular = lerEntradaValida(sc, "Digite o nome do titular:");
+                formaDePagamento = new PagamentoCartao(numeroCartao, validade, cvv, nomeTitular);
+                break;
+            case 2:
+                String chavePix = gerarChavePix();
+                System.out.println("Chave Pix gerada: " + chavePix);
+                formaDePagamento = new PagamentoPix(chavePix);
+                break;
+            default:
+                System.out.println("Forma de pagamento inválida.");
+                return;
+        }
     }
-    
-    private static String lerEntradaValida(Scanner sc, String mensagem) {
-        System.out.println(mensagem);
-        return sc.nextLine().trim();
+   
+    private static void finalizarCompra(Scanner sc, ControlarCarrinho controlarCarrinho) {
+        FormaDePagamento formaDePagamento = controlarCarrinho.getFormaDePagamento();
+
+        if (formaDePagamento == null) {
+            System.out.println("Forma de pagamento não definida. Defina uma forma de pagamento antes de finalizar a compra.");
+            return; // Não finaliza a compra se a forma de pagamento não for definida
+        }
+
+        if (formaDePagamento instanceof PagamentoPix) {
+            System.out.println("Deseja confirmar o pagamento via Pix? (sim/não)");
+            String confirmacao = sc.nextLine().trim();
+            if (confirmacao.equalsIgnoreCase("sim")) {
+                System.out.println("Pagamento via Pix confirmado.");
+                controlarCarrinho.listar();
+                System.out.println("Total: R$ " + controlarCarrinho.calcularTotal());
+                controlarCarrinho.finalizarCompra();
+            } else {
+                System.out.println("Pagamento via Pix não realizado. Escolha outra forma de pagamento.");
+                definirFormaDePagamento(sc, controlarCarrinho);
+            }
+        } else {
+            controlarCarrinho.finalizarCompra();
+            System.out.println("Compra finalizada.");
+        }
+    }
+    private static String gerarChavePix() {
+        Random random = new Random();
+        StringBuilder chavePix = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            chavePix.append(random.nextInt(10));
+        }
+        return chavePix.toString();
     }
 
+   
+    private static String lerEntradaValida(Scanner sc, String mensagem) {
+        String entrada;
+        do {
+            System.out.println(mensagem);
+            entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                System.out.println("Entrada não pode ser vazia. Tente novamente.");
+            }
+        } while (entrada.isEmpty());
+        return entrada;
+    }
+
+    // Método para ler uma entrada float não vazia e válida
     private static float lerEntradaValidaFloat(Scanner sc, String mensagem) {
         float numero;
         while (true) {
             System.out.println(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                System.out.println("Entrada não pode ser vazia. Tente novamente.");
+                continue;
+            }
             try {
-                numero = Float.parseFloat(sc.nextLine().trim());
+                numero = Float.parseFloat(entrada);
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("Entrada inválida. Digite um número decimal.");
@@ -422,12 +491,18 @@ public class Principal {
         return numero;
     }
 
+    // Método para ler uma entrada int vazia e válida
     private static int lerEntradaValidaInt(Scanner sc, String mensagem) {
         int numero;
         while (true) {
             System.out.println(mensagem);
+            String entrada = sc.nextLine().trim();
+            if (entrada.isEmpty()) {
+                System.out.println("Entrada não pode ser vazia. Tente novamente.");
+                continue;
+            }
             try {
-                numero = Integer.parseInt(sc.nextLine().trim());
+                numero = Integer.parseInt(entrada);
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("Entrada inválida. Digite um número inteiro.");
@@ -436,20 +511,37 @@ public class Principal {
         return numero;
     }
 
+    // Método para ler uma entrada não vazia e válida com regex
     private static String lerEntradaValida(Scanner sc, String mensagem, String regex) {
         String entrada;
         do {
             System.out.println(mensagem);
             entrada = sc.nextLine().trim();
-            if (!entrada.matches(regex)) {
+            if (entrada.isEmpty()) {
+                System.out.println("Entrada não pode ser vazia. Tente novamente.");
+            } else if (!entrada.matches(regex)) {
                 System.out.println("Entrada inválida. Tente novamente.");
             }
-        } while (!entrada.matches(regex));
+        } while (entrada.isEmpty() || !entrada.matches(regex));
         return entrada;
     }
 
+    // Método específico para ler CPF não vazio e válido
     private static String lerEntradaValidaCpf(Scanner sc, String mensagem) {
         return lerEntradaValida(sc, mensagem, "\\d{11}");
     }
+
+    // Método específico para ler categoria com validação
+    private static String lerEntradaValidaCategoria(Scanner sc, String mensagem) {
+        // Regex para garantir que a categoria contenha letras e números, mas não apenas letras ou apenas números
+        String regex = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]+$";
+        return lerEntradaValida(sc, mensagem, regex);
     }
 
+    // Método específico para ler nome apenas com letras e espaços
+    private static String lerEntradaValidaNome(Scanner sc, String mensagem) {
+        // Regex para garantir que o nome contenha apenas letras e espaços
+        String regex = "^[a-zA-Z ]+$";
+        return lerEntradaValida(sc, mensagem, regex);
+    }
+}

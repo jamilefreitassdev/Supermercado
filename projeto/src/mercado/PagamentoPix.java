@@ -8,6 +8,14 @@ public class PagamentoPix extends FormaDePagamento {
 		this.chavePix = chavePix;
 	}
 
+	public String getChavePix() {
+		return chavePix;
+	}
+
+	public void setChavePix(String chavePix) {
+		this.chavePix = chavePix;
+	}
+
 	@Override
 	public void processarPagamento(float valor) {
 		System.out.println("Processando pagamento de " +valor+ "em dinheiro");

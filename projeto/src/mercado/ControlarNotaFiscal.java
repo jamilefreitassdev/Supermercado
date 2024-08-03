@@ -1,5 +1,10 @@
 package mercado;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,4 +44,24 @@ public class ControlarNotaFiscal implements Crud<NotaFiscal> {
 		public void atualizar(String id, NotaFiscal item) {
 			
 		}
+		 // Método para serializar a lista de notas fiscais
+	    public void serializarNotasFiscais(String nomeArquivo) {
+	        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomeArquivo))) {
+	            oos.writeObject(notasFiscais);
+	            System.out.println("Notas fiscais serializadas com sucesso!");
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    // Método para desserializar a lista de notas fiscais
+	    @SuppressWarnings("unchecked")
+		public void desserializarNotasFiscais(String nomeArquivo) {
+	        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomeArquivo))) {
+	            notasFiscais = (List<NotaFiscal>) ois.readObject();
+	            System.out.println("Notas fiscais desserializadas com sucesso!");
+	        } catch (IOException | ClassNotFoundException e) {
+	            e.printStackTrace();
+	        }
 	}
+}

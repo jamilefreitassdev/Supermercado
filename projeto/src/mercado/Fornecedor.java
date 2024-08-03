@@ -1,8 +1,10 @@
 package mercado;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Fornecedor {
+public class Fornecedor implements Serializable {
+    private static final long serialVersionUID = 1L;
 	    private String id;
 	    private String nome;
 	    private List<Produto> produtosFornecidos;
@@ -59,7 +61,15 @@ public class Fornecedor {
 
 		@Override
 		public String toString() {
-			return "Fornecedor [id=" + id + ", nome=" + nome + ", produtosFornecidos=" + produtosFornecidos
-					+ ", contato=" + contato + ", cnpj=" + cnpj + "]";
-		}
+			 return String.format("Fornecedor:\n" +
+                     "ID: %s\n" +
+                     "Nome: %s\n" +
+                     "Produtos Fornecidos: %s\n" +
+                     "Contato: %s\n" +
+                     "CNPJ: %s",
+                     id,
+                     nome,
+                     produtosFornecidos.isEmpty() ? "Não especificado" : produtosFornecidos,
+                     contato,
+                     cnpj);}
 }
